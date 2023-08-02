@@ -69,6 +69,6 @@ Error in fun(x, y, ...) : unused argument (y)
 ```
 Hmmm, this is weird. Obviously my function `compute_mixture_pdf` is expecting 2 `double` inputs and return one value of type `double`, just like the example at the top of this page. However, looking into the documentation of `integral2`, I saw this:
 
-```{r}
-The function fun itself must be fully vectorized: It must accept arrays X and Y and return an array Z = f(X,Y) of corresponding values. 
+```diff
+- The function fun itself must be fully vectorized: It must accept arrays X and Y and return an array Z = f(X,Y) of corresponding values. 
 ```
