@@ -52,16 +52,13 @@ library(Rcpp)
 library(pracma)
 sourceCpp("functions.cpp")
 
-means <- list(c(1, 2), c(3, 4))
-covs <- list(diag(c(1, 1)), diag(c(4, 4)))
-
 integral2(compute_mixture_pdf,
     xmin = -10,
     xmax = 10,
     ymin = -10,
     ymax = 10,
-    means = means,
-    covs = covs,
+    means = list(c(1, 2), c(3, 4)),
+    covs = list(diag(c(1, 1)), diag(c(4, 4))),
     weights = c(0.5, 0.5)
 )
 ```
@@ -70,5 +67,8 @@ And this is the error that I ran into:
 ```{r}
 Error in fun(x, y, ...) : unused argument (y)
 ```
+Hmmm, this is weird. Obviously my function `compute_mixture_pdf` is expecting 2 `double` inputs and return one value of type `double`, just like the example at the top of this page. However, looking into the documentation of `integral2`, I saw this:
 
-Hmmm, this is weird. Obviously my function is expecting 2 `double` inputs and produce one value of type `double`. 
+```{r}
+The function fun itself must be fully vectorized: It must accept arrays X and Y and return an array Z = f(X,Y) of corresponding values. 
+```
