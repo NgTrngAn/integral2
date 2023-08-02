@@ -8,7 +8,9 @@ integral2(func, xmin, xmax, ymin, ymax, ...)
 
 Basically, the function f that I'd like to use is the density of a mixture of Gaussian distribution. 
 
-$$f(x) = \sum_{i=1}^L w_i f_i(x)$$ where $$f_i(x) \sim N(\mu_i, \Sigma_i), \sum_{i=1}^Lw_i = 1$$
+$$f(x) = \sum_{i=1}^L w_i f_i(x)$$ 
+
+where $$f_i(x) \sim N(\mu_i, \Sigma_i), \sum_{i=1}^Lw_i = 1$$
 
 I've already had the code for it from a different project, and it's in Rcpp, so naturally I'd like to adjust the code just a little bit. Below is my code in Rcpp. The first function returns the density of a multivariate Gaussian, and is called by the second function to compute each component of the mixture. 
 ```{r}
