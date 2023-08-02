@@ -100,4 +100,20 @@ Unfortunately, another error arise, this time even more puzzling:
 ```diff
 Error in Z * temp : non-conformable arrays
 ```
-There is nowhere in my code that either `Z` or `temp` were used. So it must come from the [source code](https://rdrr.io/rforge/pracma/src/R/integral2.R "integral2 source code").  
+There is nowhere in my code that either `Z` or `temp` were used. So it must come from the [source code](https://rdrr.io/rforge/pracma/src/R/integral2.R "integral2 source code"). And this is what I found:
+
+```{r}
+....
+if (vectorized) {
+        Z <- FUN(X, Y)
+}
+....
+
+if (singular) {
+        temp <- 0.25*(b - a) * sin(phi) %*% (dydt * sin(theta))
+    } else {
+        temp <- onevec %*% dydt
+}
+Z <- Z * temp
+```
+I saw that `Z` is the output of our function, `compute_mixture_pdf` as shown above. `temp` is 
