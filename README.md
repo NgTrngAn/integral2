@@ -14,6 +14,14 @@ where $$f_i(x) \sim N(\mu_i, \Sigma_i), \sum_{i=1}^Lw_i = 1$$
 
 I've already had the code for it from a different project, and it's in Rcpp, so naturally I'd like to adjust the code just a little bit. Below is my code in Rcpp. The first function returns the density of a multivariate Gaussian, and is called by the second function to compute each component of the mixture. 
 ```{r}
+#include <RcppArmadillo.h>
+#include <cmath>
+#include <vector>
+using namnespace arma;
+
+
+//[[Rcpp::depends(RcppArmadillo)]]
+//[[Rcpp::export]]
 double compute_gaussian_pdf(vec x, vec mean, mat cov) {
     //return the pdf of a multivariate Gaussian
     int d = x.n_elem;
@@ -22,7 +30,9 @@ double compute_gaussian_pdf(vec x, vec mean, mat cov) {
     return exp(log_pdf);
 }
 
-double compute_log_mixture_pdf(vec x, Rcpp::List means, Rcpp::List covs, vec weights) {
+
+//[[Rcpp::export]]
+double compute_mixture_pdf(vec x, Rcpp::List means, Rcpp::List covs, vec weights) {
 
     double pdf = 0;
 
@@ -36,7 +46,29 @@ double compute_log_mixture_pdf(vec x, Rcpp::List means, Rcpp::List covs, vec wei
 }
 ```
 
-And this is the error that I ran into: 
+Now to build and call the function from R:
+```{r}
+library(Rcpp)
+library(pracma)
+sourceCpp("functions.cpp")
 
+means <- list(c(1, 2), c(3, 4))
+covs <- list(diag(c(1, 1)), diag(c(4, 4)))
+
+integral2(compute_mixture_pdf,
+    xmin = -10,
+    xmax = 10,
+    ymin = -10,
+    ymax = 10,
+    means = means,
+    covs = covs,
+    weights = c(0.5, 0.5)
+)
+```
+
+And this is the error that I ran into: 
+```{r}
+Error in fun(x, y, ...) : unused argument (y)
+```
 
 Hmmm, this is weird. Obviously my function is expecting 2 `double` inputs and produce one value of type `double`. 
