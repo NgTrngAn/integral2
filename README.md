@@ -95,8 +95,9 @@ vec compute_mixture_pdf(vec x, vec y, Rcpp::List means, Rcpp::List covs, vec wei
     return out;
 }
 ```
-Unfortunately, another error arise, this time even more confusing:
+Unfortunately, another error arise, this time even more puzzling:
 
 ```diff
 Error in Z * temp : non-conformable arrays
 ```
+There is nowhere in my code that either `Z` or `temp` were used. So it must come from the [source code](https://rdrr.io/rforge/pracma/src/R/integral2.R "integral2 source code").  
