@@ -72,3 +72,31 @@ Hmmm, this is weird. Obviously my function `compute_mixture_pdf` is expecting 2 
 ```diff
 The function fun itself must be fully vectorized: It must accept arrays X and Y and return an array Z = f(X,Y) of corresponding values. 
 ```
+
+So I need to vectorize my code in Rcpp. Shouldn't be too much of a hassle though, as I can just loop through the vectors x, y and call the function `compute_gaussian_pdf`. The code is shown below.
+
+```{r}
+//[[Rcpp::export]]
+vec compute_mixture_pdf(vec x, vec y, Rcpp::List means, Rcpp::List covs, vec weights) {
+    
+    vec out = vec(x.n_elem);
+    double pdf = 0;
+    vec coordinates = vec(2);
+
+    for (int i = 0; i < x.n_elem; i++) {
+        for (int j = 0; j < weights.n_elem; j++) {
+            coordinates(0) = x(i);
+            coordinates(1) = y(i); 
+            pdf += weights(j) * compute_gaussian_pdf(coordinates, means[j], covs[j]);
+        }
+        out(i) = pdf;
+    }
+
+    return out;
+}
+```
+Unfortunately, another error arise, this time even more confusing:
+
+```diff
+Error in Z * temp : non-conformable arrays
+```
